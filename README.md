@@ -22,7 +22,7 @@ BunkMaster Pro is a modern, interactive attendance management and prediction too
 
 ## 🚀 Demo
 
-[Live Demo]()
+[Live Demo](https://bunk-master.vercel.app/)
 
 ## 💻 Technologies Used
 
