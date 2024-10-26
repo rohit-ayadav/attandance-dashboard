@@ -34,6 +34,13 @@ export function BunkMasterProComponent() {
     daysAbsent: number;
     lecturesMissed: number;
   } | null>(null)
+  const [presentProjection, setPresentProjection] = useState<{
+    newAttendance: number;
+    increaseInAttendance: number;
+    daysPresent: number;
+    lecturesAttended: number;
+  } | null>(null)
+
 
   // Load data from localStorage on initial mount
   useEffect(() => {
@@ -90,15 +97,15 @@ export function BunkMasterProComponent() {
     setAbsentProjection(null);
     setResult({ message: '', status: '', emoji: '' });
     const { name, totalLectures, presentLectures } = formData;
-  
+
     if (!name || !totalLectures || !presentLectures) {
       toast.error('Please fill all the fields! 🤨');
       return;
     }
-  
+
     const total = parseInt(totalLectures);
     const present = parseInt(presentLectures);
-  
+
     if (total === 0) {
       toast.error('Total lectures cannot be 0! 🤨');
       return;
@@ -111,7 +118,7 @@ export function BunkMasterProComponent() {
       toast.error('Present lectures cannot be more than total lectures! 🤨');
       return;
     }
-  
+
     setIsCalculating(true);
     try {
       // Calculate current attendance percentage
@@ -120,19 +127,19 @@ export function BunkMasterProComponent() {
       const lecNeededFor75 = Math.ceil((3 * total - 4 * present));
       // Calculate lectures that can be bunked
       const lecturesThatCanBeBunked = Math.ceil(((present * 100 / 75) - total));
-      
+
       // Generate next week's working days (excluding Sunday)
       const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const today = new Date();
       const nextWeek = [];
       let daysAdded = 0;
       let dayCounter = 1;
-  
+
       // Add next 6 working days
       while (daysAdded < 6) {
         const nextDay = new Date(today);
         nextDay.setDate(today.getDate() + dayCounter);
-        
+
         // Skip Sunday (0 is Sunday in getDay())
         if (nextDay.getDay() !== 0) {
           nextWeek.push({
@@ -146,14 +153,14 @@ export function BunkMasterProComponent() {
         }
         dayCounter++;
       }
-  
+
       setNextWeekDays(nextWeek);
-  
+
       // Set result message based on attendance
       let message = '';
       let status = '';
       let emoji = '';
-  
+
       if (attendancePercentage >= 75) {
         message = `Rock on ${name}! Your attendance is ${attendancePercentage.toFixed(2)}%.\nYou can bunk ${lecturesThatCanBeBunked} lectures and still maintain 75%!`;
         status = 'success';
@@ -167,7 +174,7 @@ export function BunkMasterProComponent() {
         status = 'danger';
         emoji = '🚨';
       }
-  
+
       setResult({ message, status, emoji });
       setShowProjection(true);
       calculateProjectedAttendance(nextWeek);
@@ -218,43 +225,84 @@ export function BunkMasterProComponent() {
   }
 
   const calculateAbsentProjection = () => {
-    if (!absentDays) {
-      toast.error('Please enter number of days to be absent')
-      return
+    if (parseInt(absentDays) >= 0) {
+      setPresentProjection(null)
+      if (!absentDays) {
+        toast.error('Please enter number of days to be absent')
+        return
+      }
+      // if (parseInt(absentDays) < 0) {
+      //   toast.error('Days cannot be negative')
+      //   return
+      // }
+
+      const { totalLectures, presentLectures } = formData;
+      if (!totalLectures || !presentLectures) {
+        toast.error('Please calculate attendance first')
+        return
+      }
+
+      const days = parseInt(absentDays)
+      const total = parseInt(totalLectures)
+      const present = parseInt(presentLectures)
+      const lecturesPerDay = 6
+
+      // Calculate new totals
+      const additionalTotal = days * lecturesPerDay
+      const newTotal = total + additionalTotal
+      const newAttendance = (present / newTotal) * 100
+      const currentAttendance = (present / total) * 100
+      const dropInAttendance = currentAttendance - newAttendance
+
+      setAbsentProjection({
+        newAttendance,
+        dropInAttendance,
+        daysAbsent: days,
+        lecturesMissed: additionalTotal
+      })
+
+      // Show warning if attendance drops below 75%
+      if (newAttendance < 75 && currentAttendance >= 75) {
+        toast.error('Warning: Attendance will drop below 75%! ⚠️')
+      }
     }
-    if (parseInt(absentDays) < 0) {
-      toast.error('Days cannot be negative')
-      return
-    }
+    else {
+      setAbsentProjection(null)
+      // Calculate if that days person comes to college
+      // set Absent day positive in terms of present day
+      const toBePresent = Math.abs(parseInt(absentDays))
+      const { totalLectures, presentLectures } = formData;
+      if (!totalLectures || !presentLectures) {
+        toast.error('Please calculate attendance first')
+        return
+      }
 
-    const { totalLectures, presentLectures } = formData;
-    if (!totalLectures || !presentLectures) {
-      toast.error('Please calculate attendance first')
-      return
-    }
+      const total = parseInt(totalLectures)
+      const present = parseInt(presentLectures)
+      const lecturesPerDay = 6
 
-    const days = parseInt(absentDays)
-    const total = parseInt(totalLectures)
-    const present = parseInt(presentLectures)
-    const lecturesPerDay = 6
+      // Calculate new totals
+      const additionalTotal = toBePresent * lecturesPerDay
+      const additionalPresent = toBePresent * lecturesPerDay
+      const newTotal = total + additionalTotal
+      const newPresent = present + additionalPresent
+      let newAttendance = (newPresent / newTotal) * 100
+      const currentAttendance = (present / total) * 100
+      let increaseInAttendance = newAttendance - currentAttendance
+      newAttendance = parseFloat(newAttendance.toFixed(2))
+      increaseInAttendance = parseFloat(increaseInAttendance.toFixed(2))
+      setPresentProjection({
+        newAttendance,
+        increaseInAttendance,
+        daysPresent: toBePresent,
+        lecturesAttended: additionalPresent
+      })
 
-    // Calculate new totals
-    const additionalTotal = days * lecturesPerDay
-    const newTotal = total + additionalTotal
-    const newAttendance = (present / newTotal) * 100
-    const currentAttendance = (present / total) * 100
-    const dropInAttendance = currentAttendance - newAttendance
-
-    setAbsentProjection({
-      newAttendance,
-      dropInAttendance,
-      daysAbsent: days,
-      lecturesMissed: additionalTotal
-    })
-
-    // Show warning if attendance drops below 75%
-    if (newAttendance < 75 && currentAttendance >= 75) {
-      toast.error('Warning: Attendance will drop below 75%! ⚠️')
+      // Show warning if attendance drops below 75%
+      if (newAttendance >= 75 && currentAttendance < 75) {
+        toast.error('Congratulations: Attendance will increase above 75%! 🎉'
+        )
+      }
     }
   }
 
@@ -415,6 +463,28 @@ export function BunkMasterProComponent() {
                         </div>
                         <div className="text-xs text-orange-600 mt-1">
                           ({absentProjection.lecturesMissed} lectures will be missed)
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                {presentProjection && (
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="p-4 rounded-lg bg-green-100 border-2 border-green-200"
+                  >
+                    <div className="space-y-2">
+                      <div className="text-center text-green-800">
+                        <div className="text-sm font-medium">After {presentProjection.daysPresent} days present:</div>
+                        <div className="text-2xl font-bold mt-1">
+                          {presentProjection.newAttendance.toFixed(2)}%
+                        </div>
+                        <div className="text-sm text-green-600 mt-1">
+                          Attendance will increase by {presentProjection.increaseInAttendance.toFixed(2)}%
+                        </div>
+                        <div className="text-xs text-green-600 mt-1">
+                          ({presentProjection.lecturesAttended} lectures will be attended)
                         </div>
                       </div>
                     </div>
