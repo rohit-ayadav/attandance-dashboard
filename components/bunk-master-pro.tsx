@@ -104,6 +104,11 @@ export function BunkMasterProComponent() {
       toast.error('Total lectures cannot be 0! 🤨')
       return
     }
+
+    if (total < 0 || present < 0) {
+      toast.error('Lectures cannot be negative! 🤨')
+      return
+    }
     if (total < present) {
       toast.error('Present lectures cannot be more than total lectures! 🤨')
       return
@@ -209,6 +214,10 @@ export function BunkMasterProComponent() {
   const calculateAbsentProjection = () => {
     if (!absentDays) {
       toast.error('Please enter number of days to be absent')
+      return
+    }
+    if (parseInt(absentDays) < 0) {
+      toast.error('Days cannot be negative')
       return
     }
 
@@ -479,8 +488,13 @@ export function BunkMasterProComponent() {
               </motion.div>
             )}
           </CardContent>
+          <footer className="bottom-2 text-center w-full text-gray-400 position-fixed">
+            <p>Made with ❤️ by <a href="https://www.linkedin.com/in/rohitkumaryadav-rky/" className="text-grey-500 hover:underline">Rohit Kumar Yadav</a></p>
+          </footer>
         </Card>
+
       </motion.div>
+
     </div>
   )
 }
