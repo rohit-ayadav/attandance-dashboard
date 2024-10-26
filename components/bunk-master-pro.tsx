@@ -86,91 +86,97 @@ export function BunkMasterProComponent() {
   }
 
   const calculateAttendance = async () => {
-    setShowProjection(false)
-    setAbsentProjection(null)
-    setResult({ message: '', status: '', emoji: '' })
-
-    const { name, totalLectures, presentLectures } = formData
-
+    setShowProjection(false);
+    setAbsentProjection(null);
+    setResult({ message: '', status: '', emoji: '' });
+    const { name, totalLectures, presentLectures } = formData;
+  
     if (!name || !totalLectures || !presentLectures) {
-      toast.error('Please fill all the fields! 🤨')
-      return
+      toast.error('Please fill all the fields! 🤨');
+      return;
     }
-
-    const total = parseInt(totalLectures)
-    const present = parseInt(presentLectures)
-
+  
+    const total = parseInt(totalLectures);
+    const present = parseInt(presentLectures);
+  
     if (total === 0) {
-      toast.error('Total lectures cannot be 0! 🤨')
-      return
+      toast.error('Total lectures cannot be 0! 🤨');
+      return;
     }
-
     if (total < 0 || present < 0) {
-      toast.error('Lectures cannot be negative! 🤨')
-      return
+      toast.error('Lectures cannot be negative! 🤨');
+      return;
     }
     if (total < present) {
-      toast.error('Present lectures cannot be more than total lectures! 🤨')
-      return
+      toast.error('Present lectures cannot be more than total lectures! 🤨');
+      return;
     }
-
-    setIsCalculating(true)
-
+  
+    setIsCalculating(true);
     try {
       // Calculate current attendance percentage
-      const attendancePercentage = (present / total) * 100
-
+      const attendancePercentage = (present / total) * 100;
       // Calculate required lectures for 75%
-      const lecNeededFor75 = Math.ceil((3 * total - 4 * present))
-
+      const lecNeededFor75 = Math.ceil((3 * total - 4 * present));
       // Calculate lectures that can be bunked
-      const lecturesThatCanBeBunked = Math.floor(((present * 100 / 75) - total))
-
-      // Generate next week's days
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-      const today = new Date()
-      const nextWeek = days.map((day, index) => {
-        const nextDay = new Date(today)
-        nextDay.setDate(today.getDate() + index + 1)
-        return {
-          day,
-          date: nextDay.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          willAttend: true,
-          id: index,
-          lecturesAttended: 0
+      const lecturesThatCanBeBunked = Math.ceil(((present * 100 / 75) - total));
+      
+      // Generate next week's working days (excluding Sunday)
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const today = new Date();
+      const nextWeek = [];
+      let daysAdded = 0;
+      let dayCounter = 1;
+  
+      // Add next 6 working days
+      while (daysAdded < 6) {
+        const nextDay = new Date(today);
+        nextDay.setDate(today.getDate() + dayCounter);
+        
+        // Skip Sunday (0 is Sunday in getDay())
+        if (nextDay.getDay() !== 0) {
+          nextWeek.push({
+            day: nextDay.toLocaleDateString('en-US', { weekday: 'long' }),
+            date: nextDay.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            willAttend: true,
+            id: daysAdded,
+            lecturesAttended: 0
+          });
+          daysAdded++;
         }
-      })
-
-      setNextWeekDays(nextWeek)
-
-      // Set result message based on attendance
-      let message = ''
-      let status = ''
-      let emoji = ''
-
-      if (attendancePercentage >= 75) {
-        message = `Rock on ${name}! Your attendance is ${attendancePercentage.toFixed(2)}%.\nYou can bunk ${lecturesThatCanBeBunked} lectures and still maintain 75%!`
-        status = 'success'
-        emoji = '🌟'
-      } else if (attendancePercentage >= 65) {
-        message = `Careful ${name}! Your attendance is ${attendancePercentage.toFixed(2)}%. You need ${lecNeededFor75} more lectures (estimated ${(lecNeededFor75 / 6).toFixed(2)} days) to reach 75%!`
-        status = 'warning'
-        emoji = '⚠️'
-      } else {
-        message = `Alert ${name}! Your attendance is ${attendancePercentage.toFixed(2)}%. You need ${lecNeededFor75} more lectures (estimated ${(lecNeededFor75 / 6).toFixed(2)} days) to reach 75%!`
-        status = 'danger'
-        emoji = '🚨'
+        dayCounter++;
       }
-
-      setResult({ message, status, emoji })
-      setShowProjection(true)
-      calculateProjectedAttendance(nextWeek)
+  
+      setNextWeekDays(nextWeek);
+  
+      // Set result message based on attendance
+      let message = '';
+      let status = '';
+      let emoji = '';
+  
+      if (attendancePercentage >= 75) {
+        message = `Rock on ${name}! Your attendance is ${attendancePercentage.toFixed(2)}%.\nYou can bunk ${lecturesThatCanBeBunked} lectures and still maintain 75%!`;
+        status = 'success';
+        emoji = '🌟';
+      } else if (attendancePercentage >= 65) {
+        message = `Careful ${name}! Your attendance is ${attendancePercentage.toFixed(2)}%. You need ${lecNeededFor75} more lectures (estimated ${(lecNeededFor75 / 6).toFixed(2)} days) to reach 75%!`;
+        status = 'warning';
+        emoji = '⚠️';
+      } else {
+        message = `Alert ${name}! Your attendance is ${attendancePercentage.toFixed(2)}%. You need ${lecNeededFor75} more lectures (estimated ${(lecNeededFor75 / 6).toFixed(2)} days) to reach 75%!`;
+        status = 'danger';
+        emoji = '🚨';
+      }
+  
+      setResult({ message, status, emoji });
+      setShowProjection(true);
+      calculateProjectedAttendance(nextWeek);
     } catch (error) {
-      toast.error('Error calculating attendance')
+      toast.error('Error calculating attendance');
     } finally {
-      setIsCalculating(false)
+      setIsCalculating(false);
     }
-  }
+  };
 
 
   // set lectures attended for each day based on willAttend either 6 or 0 lectures
