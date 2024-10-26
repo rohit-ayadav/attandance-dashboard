@@ -489,7 +489,7 @@ export function BunkMasterProComponent() {
             )}
           </CardContent>
           <footer className="bottom-2 text-center w-full text-gray-400 position-fixed">
-            <p>Made with ❤️ by <a href="https://www.linkedin.com/in/rohitkumaryadav-rky/" className="text-grey-500 hover:underline">Rohit Kumar Yadav</a></p>
+            <p>Made with ❤️ by <a href="https://github.com/rohit-ayadav/attandance-dashboard" className="text-grey-500 hover:underline">Rohit Kumar Yadav</a></p>
           </footer>
         </Card>
 
