@@ -225,6 +225,11 @@ export function BunkMasterProComponent() {
   }
 
   const calculateAbsentProjection = () => {
+    // if no absent days or present days then 
+    if (!absentDays || absentDays === 'NaN') {
+      toast.error('Please enter number of days to be present or absent (positive or negative)')
+      return
+    }
     if (parseInt(absentDays) >= 0) {
       setPresentProjection(null)
       if (!absentDays) {
