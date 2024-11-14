@@ -68,7 +68,7 @@ export const metadata: Metadata = {
   },
 
   // Manifest
-  manifest: '/manifest.json',
+  manifest: '/manifest.json?ver=1',
 
   // Open Graph
   openGraph: {
