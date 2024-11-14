@@ -16,7 +16,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: 'BunkMaster Pro | Smart Attendance Management & Prediction',
   description: 'Effortlessly manage your academic attendance with BunkMaster Pro. Real-time calculations, smart predictions, and weekly planning to optimize your attendance strategy. Never worry about attendance requirements again!',
-  
+
   // Basic metadata
   applicationName: 'BunkMaster Pro',
   authors: [{ name: 'Rohit Kumar Yadav', url: 'https://github.com/rohit-ayadav' }],
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     maximumScale: 1,
     userScalable: false,
   },
-  
+
   // Icons
   icons: {
     icon: '/favicon.ico',
@@ -66,10 +66,10 @@ export const metadata: Metadata = {
       },
     ],
   },
-  
+
   // Manifest
   manifest: '/manifest.json',
-  
+
   // Open Graph
   openGraph: {
     type: 'website',
@@ -87,33 +87,33 @@ export const metadata: Metadata = {
     ],
     locale: 'en_US',
   },
-  
+
   // Twitter
   twitter: {
     card: 'summary_large_image',
     title: 'BunkMaster Pro - Attendance Management Made Easy',
     description: 'Track and optimize your academic attendance with smart predictions and weekly planning. Never miss an attendance target again! 📚✨',
-    creator: '@yourusername',
+    creator: '@rohit.ayadav',
     images: ['https://bunkmaster-pro.vercel.app/twitter-image.png'],
   },
-  
+
   // Verification
   verification: {
-    google: 'your-google-site-verification',
-    yandex: 'your-yandex-verification',
-    yahoo: 'your-yahoo-verification',
+    // google: 'your-google-site-verification',
+    // yandex: 'your-yandex-verification',
+    // yahoo: 'your-yahoo-verification',
     other: {
-      me: ['your-email@domain.com'],
+      me: ['rohitkuyada@gmail.com'],
     },
   },
-  
+
   // App specific
   appleWebApp: {
     capable: true,
     title: 'BunkMaster Pro',
     statusBarStyle: 'black-translucent',
   },
-  
+
   // Robots
   robots: {
     index: true,
@@ -126,7 +126,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  
+
   // Alternative languages
   alternates: {
     canonical: 'https://bunkmaster-pro.vercel.app',
@@ -134,7 +134,7 @@ export const metadata: Metadata = {
       'en-US': 'https://bunkmaster-pro.vercel.app/en-US',
     },
   },
-  
+
   // Category
   category: 'education',
 }
