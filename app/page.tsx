@@ -12,6 +12,7 @@ const Page = () => {
         console.log("Service worker has been registered for scope: " + reg.scope);
       });
     }
+    
   }, [])
 
   return (
