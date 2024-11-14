@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   
   // Basic metadata
   applicationName: 'BunkMaster Pro',
-  authors: [{ name: 'Your Name', url: 'https://github.com/yourusername' }],
+  authors: [{ name: 'Rohit Kumar Yadav', url: 'https://github.com/rohit-ayadav' }],
   generator: 'Next.js',
   keywords: [
     'attendance calculator',
