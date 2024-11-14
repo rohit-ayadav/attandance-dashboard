@@ -15,7 +15,7 @@
             "type": "image/png"
         },
         {
-            "src": "/firstpaint.png?v=2",
+            "src": "/android-chrome-512x512.png?version=1",
             "sizes": "512x512",
             "type": "image/png"
         }
