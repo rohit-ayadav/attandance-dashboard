@@ -1,18 +1,20 @@
-'use client'
 
 import { useState, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Toaster } from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { Loader2, Calendar, Activity, Award, AlertTriangle, Check, X, TrendingUp } from 'lucide-react'
+import { FormData, ResultData, DayData, AbsentProjection, PresentProjection } from './BunkMaster/types';
+import { AttendanceForm } from './BunkMaster/AttendanceForm';
+import { ResultDisplay } from './BunkMaster/ResultDisplay';
+import { AbsenteeismCalculator } from './BunkMaster/AbsenteeismCalculator'
+import { WeeklyPlanner } from './BunkMaster/WeeklyPlanner'
+import { HelpDialog } from './HelpDialoge'
 
 const STORAGE_KEY = 'bunkMasterData'
 
 export function BunkMasterProComponent() {
-  // Core states
+
   const [formData, setFormData] = useState({
     name: '',
     totalLectures: '',
@@ -341,241 +343,41 @@ export function BunkMasterProComponent() {
               🎓 Bunk Master Pro
             </motion.h1>
 
-            <div className="space-y-6">
-              <motion.div
-                className="space-y-4"
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div className="relative">
-                  <Input
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="Your Name"
-                    className="pl-10"
-                  />
-                  <Award className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                </div>
+            <AttendanceForm
+              formData={formData}
+              isCalculating={isCalculating}
+              onInputChange={handleInputChange}
+              onCalculate={calculateAttendance}
+              onClear={clearStoredData}
+            />
 
-                <div className="relative">
-                  <Input
-                    name="totalLectures"
-                    type="number"
-                    value={formData.totalLectures}
-                    onChange={handleInputChange}
-                    placeholder="Total Lectures"
-                    className="pl-10"
-                  />
-                  <Calendar className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                </div>
-
-                <div className="relative">
-                  <Input
-                    name="presentLectures"
-                    type="number"
-                    value={formData.presentLectures}
-                    onChange={handleInputChange}
-                    placeholder="Lectures Attended"
-                    className="pl-10"
-                  />
-                  <Activity className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                </div>
-              </motion.div>
-
-              <div className="flex gap-2">
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex-1"
-                >
-                  <Button
-                    onClick={calculateAttendance}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                    disabled={isCalculating}
-                  >
-                    {isCalculating ? (
-                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Calculating...</>
-                    ) : (
-                      'Calculate My Destiny! 🎲'
-                    )}
-                  </Button>
-                </motion.div>
-                <Button
-                  onClick={clearStoredData}
-                  variant="outline"
-                  className="bg-white/50 hover:bg-white/80"
-                >
-                  🧹
-                </Button>
-              </div>
-            </div>
+            <ResultDisplay result={result} />
 
             {result.message && (
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className={`mt-6 p-4 rounded-lg border-2 ${getStatusColor(result.status)}`}
-              >
-                <div className="text-4xl mb-2 text-center">{result.emoji}</div>
-                <div className="text-center font-medium">{result.message}</div>
-              </motion.div>
+              <AbsenteeismCalculator
+                absentDays={absentDays}
+                absentProjection={absentProjection}
+                presentProjection={presentProjection}
+                onAbsentDaysChange={(e) => setAbsentDays(e.target.value)}
+                onCalculate={calculateAbsentProjection}
+              />
             )}
 
-            {/* Absenteeism Calculator */}
-            {result.message && (
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="mt-6 space-y-4"
-              >
-                <div className="relative">
-                  <Input
-                    type="number"
-                    value={absentDays}
-                    onChange={(e) => setAbsentDays(e.target.value)}
-                    placeholder="Number of days to be absent"
-                    className="pl-10"
-                  />
-                  <AlertTriangle className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                </div>
-
-                <Button
-                  onClick={calculateAbsentProjection}
-                  className="w-full bg-gradient-to-r from-orange-400 to-red-400 hover:from-orange-500 hover:to-red-500"
-                >
-                  Calculate Absenteeism Impact 📉
-                </Button>
-
-                {absentProjection && (
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="p-4 rounded-lg bg-orange-100 border-2 border-orange-200"
-                  >
-                    <div className="space-y-2">
-                      <div className="text-center text-orange-800">
-                        <div className="text-sm font-medium">After {absentProjection.daysAbsent} days absent:</div>
-                        <div className="text-2xl font-bold mt-1">
-                          {absentProjection.newAttendance.toFixed(2)}%
-                        </div>
-                        <div className="text-sm text-orange-600 mt-1">
-                          Attendance will drop by {absentProjection.dropInAttendance.toFixed(2)}%
-                        </div>
-                        <div className="text-xs text-orange-600 mt-1">
-                          ({absentProjection.lecturesMissed} lectures will be missed)
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-                {presentProjection && (
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="p-4 rounded-lg bg-green-100 border-2 border-green-200"
-                  >
-                    <div className="space-y-2">
-                      <div className="text-center text-green-800">
-                        <div className="text-sm font-medium">After {presentProjection.daysPresent} days present:</div>
-                        <div className="text-2xl font-bold mt-1">
-                          {presentProjection.newAttendance.toFixed(2)}%
-                        </div>
-                        <div className="text-sm text-green-600 mt-1">
-                          Attendance will increase by {presentProjection.increaseInAttendance.toFixed(2)}%
-                        </div>
-                        <div className="text-xs text-green-600 mt-1">
-                          ({presentProjection.lecturesAttended} lectures will be attended)
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </motion.div>
-            )}
             {showProjection && nextWeekDays.length > 0 && (
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="mt-6"
-              >
-                <h3 className="text-lg font-semibold mb-4 text-center">
-                  Next Week Planning 📅
-                </h3>
-                <div className="grid grid-cols-1 gap-3">
-                  {nextWeekDays.map((day) => (
-                    <motion.div
-                      key={day.id}
-                      className={`p-4 rounded-lg border-2 transition-colors cursor-pointer ${day.willAttend
-                        ? 'bg-green-100 border-green-200 hover:bg-green-200'
-                        : 'bg-red-100 border-red-200 hover:bg-red-200'
-                        }`}
-                      onClick={() => toggleDayAttendance(day.id)}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-semibold text-lg">{day.day}</span>
-                            <span className="text-sm text-gray-600">{day.date}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              {day.willAttend ? (
-                                <Check className="h-5 w-5 text-green-600" />
-                              ) : (
-                                <X className="h-5 w-5 text-red-600" />
-                              )}
-                              <span className="text-sm">
-                                {day.willAttend ? 'Attending' : 'Bunking'}
-                              </span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Activity className="h-4 w-4 text-gray-500" />
-                              <span className="text-sm">
-                                {day.lecturesAttended}/{6} lectures
-                              </span>
-                            </div>
-                          </div>
-                          <div className="mt-2 flex items-center space-x-2">
-                            {/* <TrendingUp className="h-4 w-4 text-blue-500" /> */}
-                            {/* <span className="text-sm text-blue-600"> */}
-                            {/* Projected Attendance: {projectedAttendance.toFixed(2)}% */}
-                            {/* </span> */}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <div className="mt-4 p-4 bg-blue-100 rounded-lg border-2 border-blue-200">
-                  <div className="text-center">
-                    <div className="text-sm text-blue-600 font-medium">Final Projected Attendance</div>
-                    <div className="text-2xl font-bold text-blue-800 mt-1">
-                      {projectedAttendance.toFixed(2)}%
-                    </div>
-                    <div className="text-xs text-blue-600 mt-1">
-                      Based on your selected attendance days
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              <WeeklyPlanner
+                nextWeekDays={nextWeekDays}
+                projectedAttendance={projectedAttendance}
+                onToggleDay={toggleDayAttendance}
+              />
             )}
           </CardContent>
-          <footer className="bottom-2 text-center w-full text-gray-400 position-fixed">
+
+          {/* <footer className="bottom-2 text-center w-full text-gray-400 position-fixed">
             <p>Made with ❤️ by <a href="https://github.com/rohit-ayadav/attandance-dashboard" className="text-grey-500 hover:underline">Rohit Kumar Yadav</a></p>
-          </footer>
+          </footer> */}
         </Card>
-
       </motion.div>
-
+      <HelpDialog />
     </div>
   )
 }
