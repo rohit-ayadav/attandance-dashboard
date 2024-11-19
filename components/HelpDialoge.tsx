@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { HelpCircle, BookOpen, Info, FileText, MessageCircle, X } from 'lucide-react'
+import { GitHubLogoIcon } from '@radix-ui/react-icons';
 
 
 
@@ -186,14 +187,21 @@ export const HelpDialog = () => {
                                     <div>
                                         <h4 className="font-medium">Developer</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Created by Rohit Kumar Yadav<br />
+
+                                            Created by <a
+                                                href="http://wa.me/+916392177974?text=Hi%20Rohit!%20Bunk%20Master%20Pro%20is%20a%20great%20tool.%20I%20had%20a%20quick%20question%20and%20was%20hoping%20you%20could%20help%20me%20out.%20Thanks!"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-600 hover: cursor-pointer"
+                                            > Rohit Kumar Yadav<br />
+                                            </a>
                                             <a
                                                 href="https://github.com/rohit-ayadav/attandance-dashboard"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="text-purple-600 hover:underline"
                                             >
-                                                View on GitHub
+                                                <GitHubLogoIcon className="h-4 w-4 inline-block" /> View source code on GitHub
                                             </a>
                                         </p>
                                     </div>
@@ -210,6 +218,6 @@ export const HelpDialog = () => {
                     </ScrollArea>
                 </Tabs>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 };
