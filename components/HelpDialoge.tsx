@@ -205,7 +205,6 @@ export const HelpDialog = () => {
                                             </a>
                                         </p>
                                     </div>
-
                                     <div>
                                         <h4 className="font-medium">Version</h4>
                                         <p className="text-sm text-gray-600 mt-1">
