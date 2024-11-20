@@ -27,6 +27,8 @@
     "react-dom": "19.0.0-rc-69d4b800-20241021",
     "react-hot-toast": "^2.4.1",
     "react-toastify": "^10.0.6",
+    "simplebar": "^6.2.7",
+    "simplebar-react": "^3.2.6",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7"
   },
