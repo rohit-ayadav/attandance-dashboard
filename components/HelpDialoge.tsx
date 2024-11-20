@@ -6,8 +6,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { HelpCircle, BookOpen, Info, FileText, MessageCircle, X } from 'lucide-react'
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
 
-
-
 export const HelpDialog = () => {
     return (
         <Dialog>
@@ -126,6 +124,19 @@ export const HelpDialog = () => {
                                             Yes, your data is saved locally on your device. You can clear it anytime using the clear button.
                                         </p>
                                     </div>
+                                    <div>
+                                        <h4 className="font-medium">Can I use this tool offline?</h4>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            Yes, Bunk Master Pro is a PWA and can be used offline after the first visit.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-medium">How accurate are the projections?</h4>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            Projections are based on the data you provide. They are accurate if your attendance pattern remains consistent.
+                                        </p>
+                                    </div>
+
                                 </div>
                             </div>
                         </TabsContent>
@@ -208,7 +219,25 @@ export const HelpDialog = () => {
                                     <div>
                                         <h4 className="font-medium">Version</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            1.0.0
+                                            1.0.2
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-medium">Released On</h4>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            30th October 2024
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-medium">Last Updated</h4>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            18th November 2024
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h4 className="font-medium">Contact</h4>
+                                        <p className="text-sm text-gray-600">
+                                            For any queries or feedback, feel free to reach out to me on <a href='https://www.linkedin.com/in/rohitkumaryadav-rky/' target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">LinkedIn</a> or <a href='http://wa.me/+916392177974?text=Hi%20Rohit!%20Bunk%20Master%20Pro%20is%20a%20great%20tool.%20I%20had%20a%20quick%20question%20and%20was%20hoping%20you%20could%20help%20me%20out.%20Thanks!' target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">WhatsApp</a>.
                                         </p>
                                     </div>
                                 </div>
