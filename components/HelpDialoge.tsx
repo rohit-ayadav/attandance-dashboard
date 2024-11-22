@@ -19,7 +19,6 @@ export const HelpDialog = () => {
                 </Button>
             </DialogTrigger>
             <SimpleBar style={{ maxHeight: '80vh' }} className="max-w-2xl">
-                {/* <DialogContent className="max-w-2xl max-h-[80vh] overflow-scroll"> */}
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
