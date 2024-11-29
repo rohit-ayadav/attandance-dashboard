@@ -19,6 +19,7 @@ BunkMaster Pro is a modern, interactive attendance management and prediction too
 - **Local Storage**: Save your data locally for quick access
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 - **Modern UI**: Beautiful, animated interface with intuitive controls
+- **PWA Support**: for offline use and App use
 
 ## 🚀 Demo
 
